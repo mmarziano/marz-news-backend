@@ -9,16 +9,12 @@ class Api::V1::SessionsController < ApplicationController
     end 
 
     def create
-        @user = User.find_by(email: params[:email])
-            if @user && @user.authenticate(params[:password])&& @user.school_id != nil
+        @user = User.find_by(email: login_params[:email])
+            if @user && @user.authenticate(login_params[:password]) 
                 log_in(@user)
-                redirect_to user_path(@user)
-            elsif @user && @user.authenticate(params[:password])
-                redirect_to signup_path(@user)
-            elsif @user 
-                render "sessions/login_retry"
-            else 
-                redirect_to new_user_path
+                render json: current_user
+            else
+                render json: { message: login_params }
             end
     end 
 
@@ -42,6 +38,10 @@ class Api::V1::SessionsController < ApplicationController
 
     private
     
+    def login_params
+        params.require(:user).permit(:email, :password)
+    end
+
     def auth
         request.env['omniauth.auth']
     end
