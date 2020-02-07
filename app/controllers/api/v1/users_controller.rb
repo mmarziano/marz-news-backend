@@ -1,4 +1,5 @@
 class Api::V1::UsersController < ApplicationController
+  
   before_action :set_user, only: [:show, :update, :destroy]
 
   # GET /users
@@ -20,7 +21,7 @@ class Api::V1::UsersController < ApplicationController
     if @user.save
       render json: @user, status: :created
     else
-      render json: @user.errors, status: :unprocessable_entity
+      render :json => { :errors => @user.errors.full_messages }, :status => 422
     end
   end
 
