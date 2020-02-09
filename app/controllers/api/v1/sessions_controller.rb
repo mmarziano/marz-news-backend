@@ -14,7 +14,7 @@ class Api::V1::SessionsController < ApplicationController
                 log_in(@user)
                 render json: current_user
             else
-                render json: { message: login_params }
+                render json: { message: 'Unable to login' }
             end
     end 
 
