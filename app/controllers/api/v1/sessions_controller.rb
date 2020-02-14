@@ -1,9 +1,5 @@
 class Api::V1::SessionsController < ApplicationController
     
-    def index
-        @user = User.new
-    end
-
     def new
         @user=User.new
     end 
@@ -21,19 +17,22 @@ class Api::V1::SessionsController < ApplicationController
 
     def destroy 
         session[:user_id] = nil
-
-        redirect_to '/'
     end 
 
-    def omniauth
-        @user = User.from_omniauth(auth)
-        @user.save
-        session[:user_id] = @user.id
-        if @user.household_id == nil
-            render '/users/complete_profile', layout: "main"
-        else 
-            redirect_to user_path(@user)
-        end 
+    def google
+        @user = User.find_by(email: google_params[:email])
+        if @user 
+            log_in(@user)
+            render json: current_user
+        else @user = User.new(google_params)
+            if @user.save
+                log_in(@user)
+                render json: current_user
+            else
+                render json: {:errors => @user.errors.full_messages}, status: 422
+            end
+        end
+        
     end
 
     private
@@ -42,7 +41,7 @@ class Api::V1::SessionsController < ApplicationController
         params.require(:user).permit(:email, :password)
     end
 
-    def auth
-        request.env['omniauth.auth']
+    def google_params
+        params.require(:user).permit(:email, :first_name, :last_name, :password, :oauthID, :profileImg)
     end
 end

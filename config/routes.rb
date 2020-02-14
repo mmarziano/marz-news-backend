@@ -7,6 +7,7 @@ Rails.application.routes.draw do
       resources :users, only: [:create]
         get '/login', to: 'sessions#create'
         post '/login', to: 'sessions#create'
+        post '/googleAuth', to: 'sessions#google'
         post '/signup', to: 'users#create'
         get '/preferences', to: 'users#preferences'
     end 
