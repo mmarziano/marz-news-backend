@@ -1,4 +1,5 @@
 class User < ApplicationRecord
+    serialize :preferences_categories, Array
     has_secure_password 
     has_many :comments
 

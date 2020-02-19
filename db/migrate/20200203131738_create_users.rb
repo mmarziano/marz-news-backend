@@ -7,6 +7,8 @@ class CreateUsers < ActiveRecord::Migration[6.0]
       t.string :last_name
       t.string :oauthID
       t.string :profileImg
+      t.string :preferences_categories
+      t.string :preferences_language, default: 'en'
 
       t.timestamps
     end

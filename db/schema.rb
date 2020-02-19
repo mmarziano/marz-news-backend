@@ -44,6 +44,8 @@ ActiveRecord::Schema.define(version: 2020_02_06_221520) do
     t.string "last_name"
     t.string "oauthID"
     t.string "profileImg"
+    t.string "preferences_categories"
+    t.string "preferences_language", default: "en"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end

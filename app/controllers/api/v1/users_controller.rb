@@ -1,6 +1,7 @@
 class Api::V1::UsersController < ApplicationController
   
   before_action :set_user, only: [:show, :update, :destroy]
+  
 
   # GET /users
   def index
@@ -19,7 +20,8 @@ class Api::V1::UsersController < ApplicationController
     @user = User.new(user_params)
 
     if @user.save
-      render json: @user, status: :created
+          log_in(@user)
+          render json: current_user
     else
       render json: {:errors => @user.errors.full_messages}, status: 422 
     end
@@ -30,7 +32,7 @@ class Api::V1::UsersController < ApplicationController
     if @user.update(user_params)
       render json: @user
     else
-      render json: @user.errors, status: :unprocessable_entity
+      render json: {:errors => @user.errors.full_messages}, status: 422
     end
   end
 
@@ -47,6 +49,6 @@ class Api::V1::UsersController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def user_params
-      params.require(:user).permit(:email, :password, :first_name, :last_name, :oauthID, :profileImg)
+      params.require(:user).permit(:email, :password, :first_name, :last_name, :oauthID, :profileImg, {:preferences_categories => []}, :preferences_language)
     end
 end
