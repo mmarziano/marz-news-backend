@@ -1,7 +1,6 @@
 class Api::V1::UsersController < ApplicationController
-  
   before_action :set_user, only: [:show, :update, :destroy]
-  
+  # skip_before_action :authorized, only: [:update, :destroy]
 
   # GET /users
   def index
@@ -30,6 +29,7 @@ class Api::V1::UsersController < ApplicationController
   # PATCH/PUT /users/1
   def update
     if @user.update(user_params)
+      byebug
       render json: @user
     else
       render json: {:errors => @user.errors.full_messages}, status: 422

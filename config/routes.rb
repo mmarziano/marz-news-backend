@@ -6,6 +6,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :users, only: [:create]
         get '/login', to: 'sessions#create'
+        post '/logout', to: 'sessions#destroy'
         get '/profile/:id', to: 'users#show'
         patch '/profile/:id', to: 'users#update'
         post '/login', to: 'sessions#create'
