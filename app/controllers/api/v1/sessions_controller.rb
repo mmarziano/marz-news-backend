@@ -27,6 +27,15 @@ class Api::V1::SessionsController < ApplicationController
                     user: @user,
                     token: jwt
                 }, status: :created and return
+            elsif @user = User.new(google_params)
+                if @user.save
+                    jwt = encode({user_id: @user.id})
+                    render json: {
+                    success: true,
+                    user: @user,
+                    token: jwt
+                }, status: :created and return
+                end
             else
                 render json: {
                     success: false,

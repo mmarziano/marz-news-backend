@@ -9,6 +9,11 @@ class Api::V1::UsersController < ApplicationController
     render json: @users
   end
 
+  def retrieve_user
+    set_current_user
+    render json: current_user
+  end 
+  
   # GET /users/1
   def show
     render json: @user

@@ -7,6 +7,7 @@ Rails.application.routes.draw do
       resources :users, only: [:create]
         get '/login', to: 'sessions#create'
         post '/logout', to: 'sessions#destroy'
+        get '/getuser', to: 'users#retrieve_user'
         get '/profile/:id', to: 'users#show'
         patch '/profile/:id', to: 'users#update'
         post '/login', to: 'sessions#create'
