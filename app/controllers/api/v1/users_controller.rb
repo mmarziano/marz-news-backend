@@ -1,6 +1,6 @@
 class Api::V1::UsersController < ApplicationController
   before_action :set_user, only: [:show, :update, :destroy]
-  # skip_before_action :authorized, only: [:update, :destroy]
+  skip_before_action :authenticate, only: [:create]
 
   # GET /users
   def index
@@ -19,8 +19,8 @@ class Api::V1::UsersController < ApplicationController
     @user = User.new(user_params)
 
     if @user.save
-          log_in(@user)
-          render json: current_user
+          @token = encode(user_id: @user.id)
+          render json: { user: @user, token: @token }
     else
       render json: {:errors => @user.errors.full_messages}, status: 422 
     end
@@ -29,7 +29,6 @@ class Api::V1::UsersController < ApplicationController
   # PATCH/PUT /users/1
   def update
     if @user.update(user_params)
-      byebug
       render json: @user
     else
       render json: {:errors => @user.errors.full_messages}, status: 422
