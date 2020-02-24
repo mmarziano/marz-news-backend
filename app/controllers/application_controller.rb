@@ -34,7 +34,7 @@ class ApplicationController < ActionController::API
 
         def decoded_token
             if auth_header
-              token = auth_header.split(' ')[1]
+              token = auth_header
               begin
                 JWT.decode(token, auth_secret, true, algorithm: ALGORITHM) 
               rescue JWT::DecodeError
@@ -45,7 +45,7 @@ class ApplicationController < ActionController::API
     
         def set_current_user
             if has_valid_auth_type?
-                user = User.find_by(user_id: decoded_token[0]['user_id'])
+                user = User.find_by(id: decoded_token[0]['user_id'])
                 if user 
                     @current_user = user 
                 end 
