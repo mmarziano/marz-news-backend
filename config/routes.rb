@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
 
   resources :articles
+        get '/bookmarks/:user_id', to: 'articles#bookmarks' 
+        put '/bookmarks/:id/:user_id', to: 'articles#remove'
   resources :comments
   namespace :api do
     namespace :v1 do

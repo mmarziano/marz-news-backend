@@ -13,16 +13,40 @@ class ArticlesController < ApplicationController
     render json: @article
   end
 
+  # GET /bookmarks/:user_id
+  def bookmarks
+    @user = User.find(params[:user_id])
+    @articles = @user.articles
+    render json: @articles
+  end
+
+  # PUT /bookmarks/:id/:user_id
+  def remove
+    @user = User.find(params[:user_id])
+    @article = @user.articles[params[:id].to_i]
+      if @article.users
+        @article.users.delete(@user)
+        @article.save
+        render json: @user.articles
+      else 
+        render json: {:errors => "User has no bookmarked articles to display."}, status: 422 
+      end
+  end
+
   # POST /articles
   def create
     @article = Article.find_or_create_by(author: article_params[:author], title: article_params[:title], description: article_params[:description],
     url: article_params[:url], urlToImage: article_params[:urlToImage], publishedAt: article_params[:publishedAt],
     content: article_params[:content], source: article_params[:source],)
-    @article.users << User.find(article_params[:user_id]) unless @article.users.include?(User.find(article_params[:user_id]))
-    if @article.save
-      render json: @article, status: :created, location: @article
-    else
-      render json: @article.errors, status: :unprocessable_entity
+    if !@article.users.include?(User.find(article_params[:user_id]))
+      @article.users << User.find(article_params[:user_id]) unless @article.users.include?(User.find(article_params[:user_id]))
+      if @article.save
+        render json: @article, status: :created, location: @article
+      end 
+    elsif @article.users.include?(User.find(article_params[:user_id]))
+      render json: {:errors => "Article has already been bookmarked."}, status: 422 
+    else 
+      render json: {:errors => @article.errors.full_messages}, status: 422 
     end
   end
 
