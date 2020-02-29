@@ -21,7 +21,7 @@ class Api::V1::SessionsController < ApplicationController
     def google
         @user = User.find_by(email: google_params[:email])
             if @user 
-                jwt = encode({user_id: @user.oauthID})
+                jwt = encode({user_id: @user.id})
                 render json: {
                     success: true,
                     user: @user,

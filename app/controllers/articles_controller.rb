@@ -15,8 +15,10 @@ class ArticlesController < ApplicationController
 
   # POST /articles
   def create
-    @article = Article.new(article_params)
-
+    @article = Article.find_or_create_by(author: article_params[:author], title: article_params[:title], description: article_params[:description],
+    url: article_params[:url], urlToImage: article_params[:urlToImage], publishedAt: article_params[:publishedAt],
+    content: article_params[:content], source: article_params[:source],)
+    @article.users << User.find(article_params[:user_id]) unless @article.users.include?(User.find(article_params[:user_id]))
     if @article.save
       render json: @article, status: :created, location: @article
     else
