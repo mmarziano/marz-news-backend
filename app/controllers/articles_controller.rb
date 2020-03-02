@@ -18,10 +18,12 @@ class ArticlesController < ApplicationController
     @user = User.find(params[:user_id])
     @all = []
     @articles = @user.articles
+    # @articles = @user.articles.sort { |a, b| a.created_at <=> b.created_at }
     @articles.each do |article|
       new_article = {a: article, count: article.total_saves}
       @all << new_article
-    end 
+    end
+
     render json: @all
   end
 
