@@ -4,9 +4,9 @@ class ArticlesController < ApplicationController
   # GET /articles
   def index
     @articles = Article.all
-
     render json: @articles
   end
+
 
   # GET /articles/1
   def show
@@ -16,15 +16,20 @@ class ArticlesController < ApplicationController
   # GET /bookmarks/:user_id
   def bookmarks
     @user = User.find(params[:user_id])
+    @all = []
     @articles = @user.articles
-    render json: @articles
+    @articles.each do |article|
+      new_article = {a: article, count: article.total_saves}
+      @all << new_article
+    end 
+    render json: @all
   end
 
   # PUT /bookmarks/:id/:user_id
   def remove
     @user = User.find(params[:user_id])
     @article = @user.articles[params[:id].to_i]
-      if @article.users
+      if !@article.users.nil?
         @article.users.delete(@user)
         @article.save
         render json: @user.articles
@@ -33,8 +38,8 @@ class ArticlesController < ApplicationController
       end
   end
 
-  # POST /articles
-  def create
+# POST /bookmarks
+  def create_bookmark
     @article = Article.find_or_create_by(author: article_params[:author], title: article_params[:title], description: article_params[:description],
     url: article_params[:url], urlToImage: article_params[:urlToImage], publishedAt: article_params[:publishedAt],
     content: article_params[:content], source: article_params[:source],)
@@ -48,6 +53,19 @@ class ArticlesController < ApplicationController
     else 
       render json: {:errors => @article.errors.full_messages}, status: 422 
     end
+  end
+
+  # POST /articles
+  def create
+    @article = Article.find_or_create_by(author: article_params[:author], title: article_params[:title], description: article_params[:description],
+    url: article_params[:url], urlToImage: article_params[:urlToImage], publishedAt: article_params[:publishedAt],
+    content: article_params[:content], source: article_params[:source],)
+    @article.timesSaved = @article.total_saves
+      if @article.save
+        render json: @article, status: :created, location: @article
+      else 
+        render json: {:errors => @article.errors.full_messages}, status: 422 
+      end
   end
 
   # PATCH/PUT /articles/1

@@ -3,7 +3,10 @@ Rails.application.routes.draw do
   resources :articles
         get '/bookmarks/:user_id', to: 'articles#bookmarks' 
         put '/bookmarks/:id/:user_id', to: 'articles#remove'
+        post '/bookmarks', to: 'articles#create_bookmark'
+  
   resources :comments
+        post '/comments', to: 'comments#create'
   namespace :api do
     namespace :v1 do
       resources :users, only: [:create]
@@ -14,6 +17,7 @@ Rails.application.routes.draw do
         patch '/profile/:id', to: 'users#update'
         post '/login', to: 'sessions#create'
         post '/googleAuth', to: 'sessions#google'
+        post '/facebookAuth', to: 'sessions#facebook'
         post '/signup', to: 'users#create'
         get '/preferences', to: 'users#preferences'
     end 

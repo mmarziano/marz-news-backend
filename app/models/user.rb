@@ -1,8 +1,7 @@
 class User < ApplicationRecord
     serialize :preferences_categories, Array
     has_secure_password 
-    
-    has_many :comments
+
     has_and_belongs_to_many :articles
 
     before_save { self.email = email.downcase }

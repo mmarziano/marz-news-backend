@@ -42,19 +42,32 @@ class Api::V1::SessionsController < ApplicationController
                     error: 'Invalid Credentials'
                 }, status: :unauthorized and return
             end
-        # @user = User.find_by(email: google_params[:email])
-        # if @user 
-        #     log_in(@user)
-        #     render json: @user
-        # else @user = User.new(google_params)
-        #     if @user.save
-        #         log_in(@user)
-        #         render json: @user
-        #     else
-        #         render json: {:errors => @user.errors.full_messages}, status: 422
-        #     end
-        # end
-        
+    end
+
+    def facebook
+        @user = User.find_by(email: facebook_params[:email])
+            if @user 
+                jwt = encode({user_id: @user.id})
+                render json: {
+                    success: true,
+                    user: @user,
+                    token: jwt
+                }, status: :created and return
+            elsif @user = User.new(facebook_params)
+                if @user.save
+                    jwt = encode({user_id: @user.id})
+                    render json: {
+                    success: true,
+                    user: @user,
+                    token: jwt
+                }, status: :created and return
+                end
+            else
+                render json: {
+                    success: false,
+                    error: 'Invalid Credentials'
+                }, status: :unauthorized and return
+            end
     end
 
     private
@@ -64,6 +77,10 @@ class Api::V1::SessionsController < ApplicationController
     end
 
     def google_params
+        params.require(:user).permit(:email, :first_name, :last_name, :password, :oauthID, :profileImg)
+    end
+
+    def facebook_params
         params.require(:user).permit(:email, :first_name, :last_name, :password, :oauthID, :profileImg)
     end
 end

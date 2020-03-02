@@ -24,6 +24,7 @@ ActiveRecord::Schema.define(version: 2020_02_26_224409) do
     t.string "publishedAt"
     t.string "content"
     t.string "source"
+    t.integer "timesSaved"
     t.integer "user_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -32,14 +33,6 @@ ActiveRecord::Schema.define(version: 2020_02_26_224409) do
   create_table "articles_users", id: false, force: :cascade do |t|
     t.bigint "article_id"
     t.bigint "user_id"
-  end
-
-  create_table "comments", force: :cascade do |t|
-    t.integer "article_id"
-    t.integer "user_id"
-    t.string "content"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "users", force: :cascade do |t|
