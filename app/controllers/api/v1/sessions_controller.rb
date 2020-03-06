@@ -48,14 +48,14 @@ class Api::V1::SessionsController < ApplicationController
     private
     
     def login_params
-        params.permit(:email, :password)
+        params.require(:user).permit(:email, :password)
     end
 
     def google_params
-        params.permit(:email, :first_name, :last_name, :password, :oauthID, :profileImg)
+        params.require(:user).permit(:email, :first_name, :last_name, :password, :oauthID, :profileImg)
     end
 
     def facebook_params
-        params.permit(:email, :first_name, :last_name, :password, :oauthID, :profileImg)
+        params.require(:user).permit(:email, :first_name, :last_name, :password, :oauthID, :profileImg)
     end
 end
