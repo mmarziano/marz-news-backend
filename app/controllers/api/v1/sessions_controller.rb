@@ -44,43 +44,18 @@ class Api::V1::SessionsController < ApplicationController
             end
     end
 
-    def facebook
-        @user = User.find_by(email: facebook_params[:email])
-            if @user 
-                jwt = encode({user_id: @user.id})
-                render json: {
-                    success: true,
-                    user: @user,
-                    token: jwt
-                }, status: :created and return
-            elsif @user = User.new(facebook_params)
-                if @user.save
-                    jwt = encode({user_id: @user.id})
-                    render json: {
-                    success: true,
-                    user: @user,
-                    token: jwt
-                }, status: :created and return
-                end
-            else
-                render json: {
-                    success: false,
-                    error: 'Invalid Credentials'
-                }, status: :unauthorized and return
-            end
-    end
-
+    
     private
     
     def login_params
-        params.require(:user).permit(:email, :password)
+        params.permit(:email, :password)
     end
 
     def google_params
-        params.require(:user).permit(:email, :first_name, :last_name, :password, :oauthID, :profileImg)
+        params.permit(:email, :first_name, :last_name, :password, :oauthID, :profileImg)
     end
 
     def facebook_params
-        params.require(:user).permit(:email, :first_name, :last_name, :password, :oauthID, :profileImg)
+        params.permit(:email, :first_name, :last_name, :password, :oauthID, :profileImg)
     end
 end
